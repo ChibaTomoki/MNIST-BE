@@ -3,13 +3,23 @@ from pydantic import BaseModel
 from base64 import b64decode
 from io import BytesIO
 from PIL import Image as PILImage
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+origins = [
+    "http://localhost:5173",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Image(BaseModel):
     image_base64: str
-
-
-app = FastAPI()
 
 
 @app.get("/sample/")
