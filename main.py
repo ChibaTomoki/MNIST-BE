@@ -28,19 +28,25 @@ class Image(BaseModel):
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super().__init__()
-        self.flatten = nn.Flatten()
-        self.linear_relu_stack = nn.Sequential(
-            nn.Linear(28 * 28, 512),
+        self.lenet5 = nn.Sequential(
+            nn.Conv2d(1, 6, (5, 5)),  # -> 6*28*28
             nn.ReLU(),
-            nn.Linear(512, 512),
+            nn.AvgPool2d((2, 2), 2),  # -> 6*14*14
             nn.ReLU(),
-            nn.Linear(512, 10),
+            nn.Conv2d(6, 16, (5, 5)),  # -> 16*10*10
+            nn.ReLU(),
+            nn.AvgPool2d((2, 2), 2),  # -> 16*5*5
+            nn.ReLU(),
+            nn.Conv2d(16, 120, (5, 5)),  # -> 120*1*1
+            nn.ReLU(),
+            nn.Flatten(),
+            nn.Linear(120, 84),
+            nn.ReLU(),
+            nn.Linear(84, 10),
         )
 
     def forward(self, x):
-        x = self.flatten(x)
-        logits = self.linear_relu_stack(x)
-        return logits
+        return self.lenet5(x)
 
 
 nn_model = NeuralNetwork().to("cpu")
@@ -60,7 +66,7 @@ async def create_image(image: Image):
     img = PILImage.open(img_bytes_io)
     img_gray_scale_inverted = img.convert("L")
     img_gray_scale = PILImageOps.invert(img_gray_scale_inverted)
-    img_resized = img_gray_scale.resize((28, 28))
+    img_resized = img_gray_scale.resize((32, 32))
     img_tensor = ToTensor()(img_resized)
     img_tensor_for_nn = img_tensor.unsqueeze(0)
 
