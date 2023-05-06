@@ -72,5 +72,8 @@ async def create_image(image: Image):
 
     output = nn_model(img_tensor_for_nn)
     prediction = torch.argmax(output, dim=1)
+    prob_distribution = torch.softmax(output, 1)
+    max_prob = torch.gather(prob_distribution, 1, prediction.view(-1, 1))
+    print(max_prob.item())
 
-    return prediction.item()
+    return {"num": prediction.item(), "prob": max_prob.item()}
