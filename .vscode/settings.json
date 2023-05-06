@@ -6,7 +6,9 @@
   "python.formatting.provider": "none",
   "cSpell.words": [
     "fastapi",
+    "MNIST",
     "pydantic",
+    "torchvision",
     "uvicorn"
   ],
   "python.linting.mypyEnabled": true,
