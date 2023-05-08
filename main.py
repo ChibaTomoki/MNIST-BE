@@ -7,11 +7,13 @@ from fastapi.middleware.cors import CORSMiddleware
 import torch
 from torch import nn
 from torchvision.transforms import ToTensor
+from dotenv import load_dotenv
+from os import getenv
+
+load_dotenv()
 
 app = FastAPI()
-origins = [
-    "http://localhost:5173",
-]
+origins = [getenv("FE_URL")]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
