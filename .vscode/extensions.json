@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "ms-python.black-formatter",
+    "matangover.mypy",
+    "streetsidesoftware.code-spell-checker"
+  ]
+}
