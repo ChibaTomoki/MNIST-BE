@@ -8,9 +8,22 @@ import torch
 from torch import nn
 from torchvision.transforms import ToTensor
 from dotenv import load_dotenv
-from os import getenv
+from os import getenv, remove
+from pymongo import MongoClient
+from typing import Any, Dict
 
 load_dotenv()
+
+uri = getenv("MONGO_URL")
+
+client: MongoClient[Dict[str, Any]] = MongoClient(uri)
+db = client["mydatabase"]
+collection = db["mymodels"]
+
+model_data = collection.find_one()["model"]
+
+with open("temp_model.pth", "wb") as f:
+    f.write(model_data)
 
 app = FastAPI()
 origins = [getenv("FE_URL")]
@@ -52,7 +65,8 @@ class NeuralNetwork(nn.Module):
 
 
 nn_model = NeuralNetwork().to("cpu")
-trained_model = torch.load("model.pth")
+trained_model = torch.load("temp_model.pth")
+remove("temp_model.pth")
 nn_model.load_state_dict(trained_model)
 
 
