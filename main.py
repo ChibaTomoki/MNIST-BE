@@ -14,9 +14,9 @@ from typing import Any, Dict
 
 load_dotenv()
 
-uri = getenv("MONGO_URL")
+mongo_url = getenv("MONGO_URL")
 
-client: MongoClient[Dict[str, Any]] = MongoClient(uri)
+client: MongoClient[Dict[str, Any]] = MongoClient(mongo_url)
 db = client["mydatabase"]
 collection = db["mymodels"]
 
