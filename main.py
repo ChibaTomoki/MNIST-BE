@@ -45,18 +45,18 @@ class NeuralNetwork(nn.Module):
         super().__init__()
         self.lenet5 = nn.Sequential(
             nn.Conv2d(1, 6, (5, 5)),  # -> 6*28*28
-            nn.ReLU(),
+            nn.Tanh(),
             nn.AvgPool2d((2, 2), 2),  # -> 6*14*14
-            nn.ReLU(),
+            nn.Sigmoid(),
             nn.Conv2d(6, 16, (5, 5)),  # -> 16*10*10
-            nn.ReLU(),
+            nn.Tanh(),
             nn.AvgPool2d((2, 2), 2),  # -> 16*5*5
-            nn.ReLU(),
+            nn.Sigmoid(),
             nn.Conv2d(16, 120, (5, 5)),  # -> 120*1*1
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Flatten(),
             nn.Linear(120, 84),
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Linear(84, 10),
         )
 
