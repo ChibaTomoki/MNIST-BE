@@ -6,7 +6,7 @@ from PIL import Image as PILImage, ImageOps as PILImageOps
 from fastapi.middleware.cors import CORSMiddleware
 import torch
 from torch import nn
-from torchvision.transforms import ToTensor
+from torchvision.transforms import ToTensor, Normalize
 from dotenv import load_dotenv
 from os import getenv, remove
 from pymongo import MongoClient
@@ -84,7 +84,8 @@ async def create_image(image: Image):
     img_gray_scale = PILImageOps.invert(img_gray_scale_inverted)
     img_resized = img_gray_scale.resize((32, 32))
     img_tensor = ToTensor()(img_resized)
-    img_tensor_for_nn = img_tensor.unsqueeze(0)
+    img_tensor_normalized = Normalize((0.5,), (0.5,))(img_tensor)
+    img_tensor_for_nn = img_tensor_normalized.unsqueeze(0)
 
     output = nn_model(img_tensor_for_nn)
     prediction = torch.argmax(output, dim=1)
