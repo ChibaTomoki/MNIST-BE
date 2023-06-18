@@ -65,6 +65,7 @@ class NeuralNetwork(nn.Module):
 
 
 nn_model = NeuralNetwork().to("cpu")
+nn_model.eval()
 trained_model = torch.load("temp_model.pth")
 remove("temp_model.pth")
 nn_model.load_state_dict(trained_model)
@@ -87,10 +88,11 @@ async def create_image(image: Image):
     img_tensor_normalized = Normalize((0.5,), (0.5,))(img_tensor)
     img_tensor_for_nn = img_tensor_normalized.unsqueeze(0)
 
-    output = nn_model(img_tensor_for_nn)
+    with torch.no_grad():
+        output = nn_model(img_tensor_for_nn)
+
     prediction = torch.argmax(output, dim=1)
     prob_distribution = torch.softmax(output, 1)
     max_prob = torch.gather(prob_distribution, 1, prediction.view(-1, 1))
-    print(max_prob.item())
 
     return {"num": prediction.item(), "prob": max_prob.item()}
